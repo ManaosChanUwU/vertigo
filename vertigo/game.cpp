@@ -1,19 +1,15 @@
 #include "game.h"
 #include "button.h"
+#include <optional>
 
 void run(sf::RenderWindow& window)
 {
-	sf::Text title(mainFont, "VERTIGO", 50);
-	title.setPosition({ 270.f, 100.f });
-	title.setFillColor(mainCl);
+	sf::RectangleShape player({ 40.f, 40.f });
+	player.setFillColor(mainCl);
+	player.setPosition({ 380.f, 500.f });
+	float playerSpeed = 300.f;
 
-	sf::Text message(mainFont, "EL JUEGO COMIENZA AQUI", 22);
-	message.setPosition({ 140.f, 270.f });
-	message.setFillColor(mainCl);
-
-	sf::Text back(mainFont, "ESC - VOLVER AL MENU", 18);
-	back.setPosition({ 220.f, 500.f });
-	back.setFillColor(mainCl);
+	sf::Clock clock;
 
 	while (window.isOpen())
 	{
@@ -35,10 +31,36 @@ void run(sf::RenderWindow& window)
 				}
 			}
 		}
+
+		float deltaTime = clock.restart().asSeconds();
+
+		//izqioerda
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+		{
+			player.move({ -playerSpeed * deltaTime, 0.f });
+		}
+
+		//derecha
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		{
+			player.move({ playerSpeed * deltaTime, 0.f });
+		}
+
+		
+		if (player.getPosition().x < 0.f)
+		{
+			player.setPosition({ 0.f, player.getPosition().y });
+		}
+
+		float rightLimit = window.getSize().x - player.getSize().x;
+		if (player.getPosition().x > rightLimit)
+		{
+			player.setPosition({ rightLimit, player.getPosition().y });
+		}
+
+		// Dibujar
 		window.clear(backgroundCl);
-		window.draw(title);
-		window.draw(message);
-		window.draw(back);
+		window.draw(player);
 		window.display();
 	}
 }
