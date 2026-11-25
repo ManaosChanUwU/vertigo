@@ -14,6 +14,8 @@ void run(sf::RenderWindow& window)
 	player.setOutlineThickness(3.0f);
 	player.setOutlineColor(mainCl);
 	player.setPosition({ 380.f, 500.f });
+	int points;
+	
 
 	float playerSpeed = 300.f;
 	float verticalSpeed = -500.f;
@@ -66,17 +68,11 @@ void run(sf::RenderWindow& window)
 	menuText.setFillColor(mainCl);
 
 	sf::FloatRect gameOverBounds = gameOverText.getLocalBounds();
-	gameOverText.setOrigin({
-		gameOverBounds.position.x + gameOverBounds.size.x / 2.f,
-		gameOverBounds.position.y + gameOverBounds.size.y / 2.f
-		});
+	gameOverText.setOrigin({gameOverBounds.position.x + gameOverBounds.size.x / 2.f,gameOverBounds.position.y + gameOverBounds.size.y / 2.f});
 	gameOverText.setPosition({ 400.f, 250.f });
 
 	sf::FloatRect menuBounds = menuText.getLocalBounds();
-	menuText.setOrigin({
-		menuBounds.position.x + menuBounds.size.x / 2.f,
-		menuBounds.position.y + menuBounds.size.y / 2.f
-		});
+	menuText.setOrigin({menuBounds.position.x + menuBounds.size.x / 2.f,menuBounds.position.y + menuBounds.size.y / 2.f});
 	menuText.setPosition({ 400.f, 320.f });
 
 	bool gameOver = false;
@@ -115,6 +111,7 @@ void run(sf::RenderWindow& window)
 
 		if (!gameOver)
 		{
+
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
 			{
 				player.move({ -playerSpeed * deltaTime, 0.f });
