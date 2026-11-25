@@ -1,8 +1,14 @@
 #include "game.h"
 #include "button.h"
+#include <vector>
+#include <optional>
+#include <cstdlib>
+#include <ctime>
 
 void run(sf::RenderWindow& window)
 {
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
 	sf::RectangleShape player({ 40.f, 40.f });
 	player.setFillColor(sf::Color::Transparent);
 	player.setOutlineThickness(3.0f);
@@ -13,8 +19,6 @@ void run(sf::RenderWindow& window)
 	float verticalSpeed = -500.f;
 	float gravity = 600.f;
 	float jumpForce = -500.f;
-
-	float groundY = 500.f;
 
 	sf::RectangleShape ground({ 800.f, 10.f });
 	ground.setPosition({ 0.f, 540.f });
@@ -50,6 +54,8 @@ void run(sf::RenderWindow& window)
 	platform4.setOutlineColor(mainCl);
 	platforms.push_back(platform4);
 
+	float nextPlatformY = 30.f;
+
 	sf::View camera = window.getDefaultView();
 	float cameraSpeed = 100.f;
 
@@ -60,11 +66,17 @@ void run(sf::RenderWindow& window)
 	menuText.setFillColor(mainCl);
 
 	sf::FloatRect gameOverBounds = gameOverText.getLocalBounds();
-	gameOverText.setOrigin({gameOverBounds.position.x + gameOverBounds.size.x / 2.f,gameOverBounds.position.y + gameOverBounds.size.y / 2.f});
+	gameOverText.setOrigin({
+		gameOverBounds.position.x + gameOverBounds.size.x / 2.f,
+		gameOverBounds.position.y + gameOverBounds.size.y / 2.f
+		});
 	gameOverText.setPosition({ 400.f, 250.f });
 
 	sf::FloatRect menuBounds = menuText.getLocalBounds();
-	menuText.setOrigin({ menuBounds.position.x + menuBounds.size.x / 2.f, menuBounds.position.y + menuBounds.size.y / 2.f });
+	menuText.setOrigin({
+		menuBounds.position.x + menuBounds.size.x / 2.f,
+		menuBounds.position.y + menuBounds.size.y / 2.f
+		});
 	menuText.setPosition({ 400.f, 320.f });
 
 	bool gameOver = false;
@@ -151,9 +163,7 @@ void run(sf::RenderWindow& window)
 					if (horizontalCollision && verticalCollision)
 					{
 						player.setPosition({ player.getPosition().x, platformY - player.getSize().y });
-
 						verticalSpeed = jumpForce;
-
 						break;
 					}
 				}
@@ -166,12 +176,40 @@ void run(sf::RenderWindow& window)
 				camera.setCenter({ 400.f, player.getPosition().y + cameraSpeed });
 			}
 
-			if (player.getPosition().y > camera.getCenter().y + window.getSize().y / 2.f)
+			float cameraTop = camera.getCenter().y - window.getSize().y / 2.f;
+			float cameraBottom = camera.getCenter().y + window.getSize().y / 2.f;
+
+			while (nextPlatformY > cameraTop - 200.f)
+			{
+				sf::RectangleShape newPlatform({ 120.f, 15.f });
+				float platformX = static_cast<float>(std::rand() % (static_cast<int>(window.getSize().x) - 120));
+
+				newPlatform.setPosition({ platformX, nextPlatformY });
+				newPlatform.setFillColor(sf::Color::Transparent);
+				newPlatform.setOutlineThickness(3.0f);
+				newPlatform.setOutlineColor(mainCl);
+
+				platforms.push_back(newPlatform);
+
+				nextPlatformY -= static_cast<float>(80 + std::rand() % 41);
+			}
+
+			for (int i = 0; i < platforms.size();)
+			{
+				if (platforms[i].getPosition().y > cameraBottom + 200.f)
+				{
+					platforms.erase(platforms.begin() + i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+
+			if (player.getPosition().y > cameraBottom)
 			{
 				gameOver = true;
 			}
-
-
 		}
 
 		if (gameOver)
