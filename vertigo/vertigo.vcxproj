@@ -159,7 +159,19 @@ sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="credits.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="howToPlay.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="vertigo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="button.h" />
+    <ClInclude Include="credits.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="howToPlay.h" />
+    <ClInclude Include="menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
