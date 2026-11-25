@@ -4,7 +4,9 @@
 void run(sf::RenderWindow& window)
 {
 	sf::RectangleShape player({ 40.f, 40.f });
-	player.setFillColor(mainCl);
+	player.setFillColor(sf::Color::Transparent);
+	player.setOutlineThickness(3.0f);
+	player.setOutlineColor(mainCl);
 	player.setPosition({ 380.f, 500.f });
 	float playerSpeed = 300.f;
 	float verticalSpeed = -500.f;
@@ -22,22 +24,30 @@ void run(sf::RenderWindow& window)
 
 	sf::RectangleShape platform1({ 120.f, 15.f });
 	platform1.setPosition({ 340.f, 430.f });
-	platform1.setFillColor(mainCl);
+	platform1.setFillColor(sf::Color::Transparent);
+	platform1.setOutlineThickness(3.0f);
+	platform1.setOutlineColor(mainCl);
 	platforms.push_back(platform1);
 
 	sf::RectangleShape platform2({ 120.f, 15.f });
 	platform2.setPosition({ 180.f, 330.f });
-	platform2.setFillColor(mainCl);
+	platform2.setFillColor(sf::Color::Transparent);
+	platform2.setOutlineThickness(3.0f);
+	platform2.setOutlineColor(mainCl);
 	platforms.push_back(platform2);
 
 	sf::RectangleShape platform3({ 120.f, 15.f });
 	platform3.setPosition({ 480.f, 230.f });
-	platform3.setFillColor(mainCl);
+	platform3.setFillColor(sf::Color::Transparent);
+	platform3.setOutlineThickness(3.0f);
+	platform3.setOutlineColor(mainCl);
 	platforms.push_back(platform3);
 
 	sf::RectangleShape platform4({ 120.f, 15.f });
 	platform4.setPosition({ 300.f, 130.f });
-	platform4.setFillColor(mainCl);
+	platform4.setFillColor(sf::Color::Transparent);
+	platform4.setOutlineThickness(3.0f);
+	platform4.setOutlineColor(mainCl);
 	platforms.push_back(platform4);
 
 	sf::View camera = window.getDefaultView();
