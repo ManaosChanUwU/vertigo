@@ -4,7 +4,7 @@ sf::Font mainFont;
 
 bool loadFont()
 {
-    return mainFont.openFromFile("res/Minecraft.ttf");
+    return mainFont.openFromFile("../res/Minecraft.ttf");
 }
 
 Button createButton(float positionX, float positionY, const std::string& text)

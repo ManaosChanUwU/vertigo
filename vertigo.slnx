@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="vertigo/vertigo.vcxproj" />
+  <Project Path="vertigo/vertigo.vcxproj" Id="b2e78711-03af-4176-a6a6-d09c6ed0696f" />
 </Solution>
