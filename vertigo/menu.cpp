@@ -70,7 +70,7 @@ void run()
                 {
                     if (selectedOption == 0)
                     {
-                        //gameplay
+                        run(window);
                     }
                     else if (selectedOption == 1)
                     {
