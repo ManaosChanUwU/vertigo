@@ -6,7 +6,6 @@
 
 void run()
 {
-    // Cargamos la fuente antes de crear los textos.
     if (!loadFont())
     {
         return;
@@ -32,20 +31,17 @@ void run()
     {
         while (std::optional<sf::Event> event = window.pollEvent())
         {
-            // Cerrar ventana
             if (event->is<sf::Event::Closed>())
             {
                 window.close();
                 return;
             }
 
-            // Detectar teclas
             const sf::Event::KeyPressed* key =
                 event->getIf<sf::Event::KeyPressed>();
 
             if (key != nullptr)
             {
-                // Bajar en el menu
                 if (key->code == sf::Keyboard::Key::Down)
                 {
                     if (selectedOption < optionQuantity - 1)
@@ -58,7 +54,6 @@ void run()
                     }
                 }
 
-                // Subir en el menu
                 if (key->code == sf::Keyboard::Key::Up)
                 {
                     if (selectedOption > 0)
@@ -71,7 +66,6 @@ void run()
                     }
                 }
 
-                // Seleccionar opcion
                 if (key->code == sf::Keyboard::Key::Enter)
                 {
                     if (selectedOption == 0)
@@ -80,11 +74,11 @@ void run()
                     }
                     else if (selectedOption == 1)
                     {
-                        //tutorial
+                        howToPlay(window);
                     }
                     else if (selectedOption == 2)
                     {
-                        //creditos
+                        credits(window);
                     }
                     else if (selectedOption == 3)
                     {
