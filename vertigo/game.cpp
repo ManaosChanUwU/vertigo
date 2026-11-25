@@ -8,11 +8,11 @@ void run(sf::RenderWindow& window)
 	player.setOutlineThickness(3.0f);
 	player.setOutlineColor(mainCl);
 	player.setPosition({ 380.f, 500.f });
+
 	float playerSpeed = 300.f;
 	float verticalSpeed = -500.f;
 	float gravity = 600.f;
 	float jumpForce = -500.f;
-	bool isGrounded = false;
 
 	float groundY = 500.f;
 
@@ -53,6 +53,22 @@ void run(sf::RenderWindow& window)
 	sf::View camera = window.getDefaultView();
 	float cameraSpeed = 100.f;
 
+	sf::Text gameOverText(mainFont, "GAME OVER", 40);
+	gameOverText.setFillColor(mainCl);
+
+	sf::Text menuText(mainFont, "PRESS ENTER TO RETURN", 18);
+	menuText.setFillColor(mainCl);
+
+	sf::FloatRect gameOverBounds = gameOverText.getLocalBounds();
+	gameOverText.setOrigin({gameOverBounds.position.x + gameOverBounds.size.x / 2.f,gameOverBounds.position.y + gameOverBounds.size.y / 2.f});
+	gameOverText.setPosition({ 400.f, 250.f });
+
+	sf::FloatRect menuBounds = menuText.getLocalBounds();
+	menuText.setOrigin({ menuBounds.position.x + menuBounds.size.x / 2.f, menuBounds.position.y + menuBounds.size.y / 2.f });
+	menuText.setPosition({ 400.f, 320.f });
+
+	bool gameOver = false;
+
 	sf::Clock clock;
 
 	while (window.isOpen())
@@ -74,91 +90,112 @@ void run(sf::RenderWindow& window)
 					window.setView(window.getDefaultView());
 					return;
 				}
+
+				if (gameOver && key->code == sf::Keyboard::Key::Enter)
+				{
+					window.setView(window.getDefaultView());
+					return;
+				}
 			}
 		}
 
 		float deltaTime = clock.restart().asSeconds();
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+		if (!gameOver)
 		{
-			player.move({ -playerSpeed * deltaTime, 0.f });
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-		{
-			player.move({ playerSpeed * deltaTime, 0.f });
-		}
-
-		if (player.getPosition().x < 0.f)
-		{
-			player.setPosition({ 0.f, player.getPosition().y });
-		}
-
-		float rightLimit = window.getSize().x - player.getSize().x;
-
-		if (player.getPosition().x > rightLimit)
-		{
-			player.setPosition({ rightLimit, player.getPosition().y });
-		}
-
-		float previousBottom = player.getPosition().y + player.getSize().y;
-
-		verticalSpeed = verticalSpeed + gravity * deltaTime;
-
-		player.move({ 0.f, verticalSpeed * deltaTime });
-
-		float currentBottom = player.getPosition().y + player.getSize().y;
-
-		if (verticalSpeed > 0.f)
-		{
-			for (int i = 0; i < platforms.size(); i++)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
 			{
-				float platformX = platforms[i].getPosition().x;
-				float platformY = platforms[i].getPosition().y;
-				float platformWidth = platforms[i].getSize().x;
+				player.move({ -playerSpeed * deltaTime, 0.f });
+			}
 
-				float playerLeft = player.getPosition().x;
-				float playerRight = playerLeft + player.getSize().x;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+			{
+				player.move({ playerSpeed * deltaTime, 0.f });
+			}
 
-				bool horizontalCollision = playerRight > platformX && playerLeft < platformX + platformWidth;
+			if (player.getPosition().x < 0.f)
+			{
+				player.setPosition({ 0.f, player.getPosition().y });
+			}
 
-				bool verticalCollision = previousBottom <= platformY && currentBottom >= platformY;
+			float rightLimit = window.getSize().x - player.getSize().x;
 
-				if (horizontalCollision && verticalCollision)
+			if (player.getPosition().x > rightLimit)
+			{
+				player.setPosition({ rightLimit, player.getPosition().y });
+			}
+
+			float previousBottom = player.getPosition().y + player.getSize().y;
+
+			verticalSpeed = verticalSpeed + gravity * deltaTime;
+
+			player.move({ 0.f, verticalSpeed * deltaTime });
+
+			float currentBottom = player.getPosition().y + player.getSize().y;
+
+			if (verticalSpeed > 0.f)
+			{
+				for (int i = 0; i < platforms.size(); i++)
 				{
-					player.setPosition({ player.getPosition().x, platformY - player.getSize().y });
+					float platformX = platforms[i].getPosition().x;
+					float platformY = platforms[i].getPosition().y;
+					float platformWidth = platforms[i].getSize().x;
 
-					verticalSpeed = jumpForce;
-					isGrounded = false;
+					float playerLeft = player.getPosition().x;
+					float playerRight = playerLeft + player.getSize().x;
 
-					break;
+					bool horizontalCollision = playerRight > platformX && playerLeft < platformX + platformWidth;
+
+					bool verticalCollision = previousBottom <= platformY && currentBottom >= platformY;
+
+					if (horizontalCollision && verticalCollision)
+					{
+						player.setPosition({ player.getPosition().x, platformY - player.getSize().y });
+
+						verticalSpeed = jumpForce;
+
+						break;
+					}
 				}
 			}
+
+			float cameraPosition = camera.getCenter().y;
+
+			if (player.getPosition().y < cameraPosition - cameraSpeed)
+			{
+				camera.setCenter({ 400.f, player.getPosition().y + cameraSpeed });
+			}
+
+			if (player.getPosition().y > camera.getCenter().y + window.getSize().y / 2.f)
+			{
+				gameOver = true;
+			}
+
+
 		}
 
-		if (player.getPosition().y >= groundY)
+		if (gameOver)
 		{
-			player.setPosition({ player.getPosition().x, groundY });
-
-			verticalSpeed = jumpForce;
-			isGrounded = false;
+			window.setView(window.getDefaultView());
+			window.clear(backgroundCl);
+			window.draw(gameOverText);
+			window.draw(menuText);
+			window.display();
+			continue;
 		}
 
-		float cameraPosition = camera.getCenter().y;
-
-		if (player.getPosition().y < cameraPosition - cameraSpeed)
-		{
-			camera.setCenter({ 400.f, player.getPosition().y + cameraSpeed });
-		}
 		window.setView(camera);
 		window.clear(backgroundCl);
 		window.draw(ground);
+
 		for (int i = 0; i < platforms.size(); i++)
 		{
 			window.draw(platforms[i]);
 		}
+
 		window.draw(player);
 		window.display();
 	}
+
 	window.setView(window.getDefaultView());
 }
